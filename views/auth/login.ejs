@@ -1,42 +1,55 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/auth.css">
 </head>
 
 <body>
-
     <%- include('../includes/navigation.ejs') %>
-
     <main>
-        <div class="container">
-        <% if (errorMessage) { %>
-        <div class="user-message user-message--error"><%= errorMessage %></div>
-        <% } %>
-        <form class="login-form" action="/login" method="POST">
-            <div class="form-control">
-                <label for="email">E-Mail</label>
-                <input 
-                    class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>" 
-                    type="email"
-                    name="email" 
-                    id="email" 
-                    value="<%= prev.email %>">
+        <div class="container my-4">
+            <% if (errorMessage) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= errorMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="form-control">
-                <label for="password">Password</label>
-                <input 
-                    class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>" 
-                    type="password" 
-                    name="password" 
-                    id="password" 
-                    value="<%= prev.password %>">
+            <% } %>
+            <% if (validationErrors.length) { %>
+            <% for( let index = 0; index < validationErrors.length; index++ ) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= validationErrors[index].msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button class="btn" type="submit">Login</button>
-        </form>
-        <div class="centered">
-            <a href="/reset">Reset Password</a>
+            <% } %>
+            <% } %>
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input class="form-control
+                        <% if (validationErrors.length) { %>
+                        <%= validationErrors.find(e => e.param === 'email') ? 'is-invalid' : 'is-valid' %>" <% } %>
+                        id="email" aria-describedby="emailHelp" placeholder="Enter email address." type="email"
+                        name="email" id="email" value="<%= prev.email %>">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input class="form-control 
+                        <% if (validationErrors.length) { %>
+                         <%= validationErrors.find(e => e.param === 'password') ? 'is-invalid' : 'is-valid' %>" <% } %>
+                        type="password" name="password" id="password" placeholder="Password."
+                        value="<%= prev.password %>">
+                </div>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-dark">Login</button>
+            </form>
         </div>
-    </div>
-    </main>
-    <%- include('../includes/end.ejs') %>
+        <div class="container">
+            <div class="row  justify-content-center">
+                <a class="btn btn-secondary" href="/reset">Reset Password</a>
+                <div class="mx-2"></div>
+                <a class="btn btn-secondary" href="/signup">Signup</a>
+            </div>
+        </div>
+
+        <%- include('../includes/end.ejs') %>

@@ -9,11 +9,11 @@ exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
-        errorMessage: null,
         prev: {
             email: '',
             password: ''
         },
+        errorMessage: null,
         validationErrors: [],
         isAuthenticated: true,
         csrfToken: 'ssss'
@@ -30,11 +30,11 @@ exports.postLogin = (req, res, next) => {
         return res.status(422).render('auth/login', {
             path: '/login',
             pageTitle: 'Login',
-            errorMessage: errors.array()[0].msg,
             prev: {
                 email: email,
                 password: password
             },
+            errorMessage: null,
             validationErrors: errors.array(),
             isAuthenticated: true,
             csrfToken: 'ssss'
@@ -48,7 +48,7 @@ exports.postLogin = (req, res, next) => {
                     path: '/login',
                     pageTitle: 'Login',
                     errorMessage: 'Invalid email or password.',
-                    oldInput: {
+                    prev: {
                         email: email,
                         password: password
                     },
@@ -59,23 +59,24 @@ exports.postLogin = (req, res, next) => {
             }
             bcrypt
                 .compare(password, user.password)
-                .then(mathc => {
-                    if (mathc) {
-                        req.session.isLoggedIn = true;
-                        req.session.user = user;
-                        return req.session.save(err => {
-                            console.log(err);
-                            res.redirect('/');
-                        });
+                .then(match => {
+                    if (match) {
+                        // req.session.isLoggedIn = true;
+                        // req.session.user = user;
+                        // return req.session.save(err => {
+                        //     console.log(err);
+                        //     res.redirect('/');
+                        // });
+                        res.redirect('/');
                     }
                     return res.status(422).render('auth/login', {
                         path: '/login',
                         pageTitle: 'Login',
-                        errorMessage: 'Invalid email or password.',
-                        oldInput: {
+                        prev: {
                             email: email,
                             password: password
                         },
+                        errorMessage: 'Invalid email or password.',
                         validationErrors: [],
                         isAuthenticated: true,
                         csrfToken: 'ssss'
@@ -86,11 +87,66 @@ exports.postLogin = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
+        .catch(err => next(new Error(err)));
 };
 
+// GET /signup
+exports.getSignup = (req, res, next) => {
+    res.render('auth/signup', {
+        path: '/signup',
+        pageTitle: 'Signup',
+        errorMessage: null,
+        prev: {
+            email: '',
+            password: '',
+            confirmPassword: ''
+        },
+        validationErrors: [],
+        isAuthenticated: true,
+        csrfToken: 'ssss'
+    });
+};
 
+// POST /signup
+exports.postSignup = (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
+    const errors = validationResult(req);
+    // re-render if validation error
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/signup', {
+            path: '/signup',
+            pageTitle: 'Signup',
+            prev: {
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword
+            },
+            errorMessage: null,
+            validationErrors: errors.array(),
+            isAuthenticated: true,
+            csrfToken: 'ssss'
+        });
+    }
+    bcrypt
+        .hash(password, 12)
+        .then(hashedPassword => {
+            const user = new User({
+                email: email,
+                password: hashedPassword,
+                cart: []
+            });
+            return user.save();
+        })
+        .then(result => {
+            res.redirect('/login');
+            // return transporter.sendMail({
+            //   to: email,
+            //   from: 'shop@node-complete.com',
+            //   subject: 'Signup succeeded!',
+            //   html: '<h1>You successfully signed up!</h1>'
+            // });
+        })
+        .catch(err => next(new Error(err)));
+};
