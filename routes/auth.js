@@ -1,10 +1,8 @@
 const express = require('express');
+const router = express.Router();
 const { body } = require('express-validator');
-
 const authController = require('../controllers/auth');
 const User = require('../models/user');
-
-const router = express.Router();
 
 
 router.route('/login')
@@ -56,6 +54,9 @@ router.route('/signup')
             })
     ],
         authController.postSignup);
+
+
+router.post('/logout', authController.postLogout);
 
 
 module.exports = router;

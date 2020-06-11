@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 
+
 // GET /login
 exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
@@ -15,10 +16,9 @@ exports.getLogin = (req, res, next) => {
         },
         errorMessage: null,
         validationErrors: [],
-        isAuthenticated: true,
-        csrfToken: 'ssss'
     });
 };
+
 
 // POST /login
 exports.postLogin = (req, res, next) => {
@@ -36,8 +36,6 @@ exports.postLogin = (req, res, next) => {
             },
             errorMessage: null,
             validationErrors: errors.array(),
-            isAuthenticated: true,
-            csrfToken: 'ssss'
         });
     }
     // check user in database
@@ -53,21 +51,19 @@ exports.postLogin = (req, res, next) => {
                         password: password
                     },
                     validationErrors: [],
-                    isAuthenticated: true,
-                    csrfToken: 'ssss'
                 });
             }
             bcrypt
                 .compare(password, user.password)
                 .then(match => {
                     if (match) {
-                        // req.session.isLoggedIn = true;
-                        // req.session.user = user;
-                        // return req.session.save(err => {
-                        //     console.log(err);
-                        //     res.redirect('/');
-                        // });
-                        res.redirect('/');
+                        req.session.isLoggedIn = true;
+                        req.session.user = user;
+                        return req.session.save(err => {
+                            // throw new Error(err);
+                            console.log(err);
+                            res.redirect('/');
+                        });
                     }
                     return res.status(422).render('auth/login', {
                         path: '/login',
@@ -78,8 +74,6 @@ exports.postLogin = (req, res, next) => {
                         },
                         errorMessage: 'Invalid email or password.',
                         validationErrors: [],
-                        isAuthenticated: true,
-                        csrfToken: 'ssss'
                     });
                 })
                 .catch(err => {
@@ -89,6 +83,7 @@ exports.postLogin = (req, res, next) => {
         })
         .catch(err => next(new Error(err)));
 };
+
 
 // GET /signup
 exports.getSignup = (req, res, next) => {
@@ -102,10 +97,9 @@ exports.getSignup = (req, res, next) => {
             confirmPassword: ''
         },
         validationErrors: [],
-        isAuthenticated: true,
-        csrfToken: 'ssss'
     });
 };
+
 
 // POST /signup
 exports.postSignup = (req, res, next) => {
@@ -125,8 +119,6 @@ exports.postSignup = (req, res, next) => {
             },
             errorMessage: null,
             validationErrors: errors.array(),
-            isAuthenticated: true,
-            csrfToken: 'ssss'
         });
     }
     bcrypt
@@ -149,4 +141,13 @@ exports.postSignup = (req, res, next) => {
             // });
         })
         .catch(err => next(new Error(err)));
+};
+
+
+//POST /logout
+exports.postLogout = (req, res, next) => {
+    req.session.destroy(err => {
+        console.log(err);
+        res.redirect('/');
+    });
 };
