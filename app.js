@@ -5,7 +5,6 @@ const path = require('path');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrfProtection = require('csurf')();
-const sendgridMail = require('@sendgrid/mail');
 
 const authRoutes = require('./routes/auth');
 
@@ -14,7 +13,6 @@ const User = require('./models/user');
 const app = express();
 
 const MONGODB_URI = 'mongodb://localhost:27017/ecommerce';
-const SENDGRID_API_KEY = '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';
 
 // set ejs as view engine
 app.set('view engine', 'ejs');
@@ -105,24 +103,4 @@ mongoose
         });
     }).catch(err => {
         console.log(err);
-    });
-
-
-// sendgrid test
-sendgridMail.setApiKey(SENDGRID_API_KEY);
-const msg = {
-    to: 'iamsanjaymalakar@gmail.com',
-    from: 'iamsanjaymalakar@gmail.com',
-    subject: 'Testing sendgrids mail.',
-    text: 'Hello, how are you?',
-    html: '<strong>and easy to do <i>anywhere</i>, even with Node.js</strong>',
-};
-sendgridMail.send(msg)
-    .then(() => {
-        console.log('Message sent successfully.');
-    }, error => {
-        console.error(error);
-        if (error.response) {
-            console.error(error.response.body);
-        }
     });

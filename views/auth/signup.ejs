@@ -39,7 +39,7 @@
                     <label for="password">Password</label>
                     <input class="form-control 
                 <% if (validationErrors.length) { %>
-                 <%= validationErrors.find(e => e.param === 'password') ? 'is-invalid' : 'is-valid' %>" <% } %>
+                 <%= validationErrors.find(e => e.param === 'password') ? 'is-invalid' : 'is-valid' %> <% } %>"
                         type="password" name="password" id="password" placeholder="Password."
                         value="<%= prev.password %>">
                     <small id="passwordHelp" class="form-text text-muted">Password should contain only numbers and
@@ -49,7 +49,7 @@
                     <label for="confirmPassword">Password</label>
                     <input class="form-control 
                 <% if (validationErrors.length) { %>
-                 <%= validationErrors.find(e => e.param === 'confirmPassword') ? 'is-invalid' : 'is-valid' %>" <% } %>
+                 <%= validationErrors.find(e => e.param === 'confirmPassword') ? 'is-invalid' : 'is-valid' %> <% } %>"
                         type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm password."
                         value="<%= prev.confirmPassword %>">
                     <small id="confirmPasswordHelp" class="form-text text-muted">Re-enter the same password

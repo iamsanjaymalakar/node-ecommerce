@@ -28,7 +28,7 @@
                     <label for="email">Email address</label>
                     <input class="form-control
                         <% if (validationErrors.length) { %>
-                        <%= validationErrors.find(e => e.param === 'email') ? 'is-invalid' : 'is-valid' %>" <% } %>
+                        <%= validationErrors.find(e => e.param === 'email') ? 'is-invalid' : 'is-valid' %> <% } %>"
                         id="email" aria-describedby="emailHelp" placeholder="Enter email address." type="email"
                         name="email" id="email" value="<%= prev.email %>">
                 </div>
@@ -36,7 +36,7 @@
                     <label for="password">Password</label>
                     <input class="form-control 
                         <% if (validationErrors.length) { %>
-                         <%= validationErrors.find(e => e.param === 'password') ? 'is-invalid' : 'is-valid' %>" <% } %>
+                         <%= validationErrors.find(e => e.param === 'password') ? 'is-invalid' : 'is-valid' %> <% } %>"
                         type="password" name="password" id="password" placeholder="Password."
                         value="<%= prev.password %>">
                 </div>
@@ -51,5 +51,6 @@
                 <a class="btn btn-secondary" href="/signup">Signup</a>
             </div>
         </div>
+    </main>
 
-        <%- include('../includes/end.ejs') %>
+    <%- include('../includes/end.ejs') %>

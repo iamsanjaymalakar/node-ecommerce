@@ -28,8 +28,8 @@ router.route('/signup')
             .isEmail()
             .withMessage('Please enter a valid email.')
             .custom((value, { req }) => {
-                return User.findOne({ email: value }).then(userDoc => {
-                    if (userDoc) {
+                return User.findOne({ email: value }).then(user => {
+                    if (user) {
                         return Promise.reject(
                             'E-Mail exists already, please pick a different one.'
                         );
@@ -57,6 +57,51 @@ router.route('/signup')
 
 
 router.post('/logout', authController.postLogout);
+
+
+router.route('/reset')
+    .get(authController.getReset)
+    .post([
+        body('email')
+            .isEmail()
+            .withMessage('Please enter a valid email.')
+            .custom((value, { req }) => {
+                return User.findOne({ email: value })
+                    .then(user => {
+                        if (!user) {
+                            return Promise.reject(
+                                'Email Address not associated with account.'
+                            );
+                        }
+                    });
+            })
+            .normalizeEmail()],
+        authController.postReset);
+
+
+router.route('/reset/:token')
+    .get(authController.getNewPassword);
+
+
+router.route('/new-password')
+    .post([
+        body(
+            'password',
+            'Please enter a password with only numbers and text and at least 6 characters.'
+        )
+            .isLength({ min: 6 })
+            .isAlphanumeric()
+            .trim(),
+        body('confirmPassword')
+            .trim()
+            .custom((value, { req }) => {
+                if (value !== req.body.password) {
+                    throw new Error('Passwords have to match!');
+                }
+                return true;
+            })
+
+    ], authController.postNewPassword);
 
 
 module.exports = router;
