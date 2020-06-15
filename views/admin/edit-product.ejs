@@ -1,0 +1,84 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <div class="container my-4">
+            <% if (errorMessage) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= errorMessage %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <% } %>
+            <% if (validationErrors.length) { %>
+            <% for( let index = 0; index < validationErrors.length; index++ ) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= validationErrors[index].msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <% } %>
+            <% } %>
+            <form action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input class="form-control
+                    <% if (validationErrors.length) { %>
+                    <%= validationErrors.find(e => e.param === 'title') ? 'is-invalid' : 'is-valid' %> <% } %>"
+                        id="title" placeholder="Product title." type="text" name="title" id="title"
+                        value="<% if (editing || hasError) { %><%= product.title %><% } %>">
+                </div>
+                <div class="form-group">
+                    <label for="imageURL">Image URL</label>
+                    <input class="form-control
+                    <% if (validationErrors.length) { %>
+                    <%= validationErrors.find(e => e.param === 'imageURL') ? 'is-invalid' : 'is-valid' %> <% } %>"
+                        id="imageURL" placeholder="Image URL." type="text" name="imageURL" id="imageURL"
+                        value="<% if (editing || hasError) { %><%= product.imageURL %><% } %>">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input class="form-control
+                    <% if (validationErrors.length) { %>
+                    <%= validationErrors.find(e => e.param === 'price') ? 'is-invalid' : 'is-valid' %> <% } %>"
+                        id="price" placeholder="Price." type="number" step="0.01" name="price" id="price"
+                        value="<% if (editing || hasError) { %><%= product.price %><% } %>">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control
+                    <% if (validationErrors.length) { %>
+                    <%= validationErrors.find(e => e.param === 'description') ? 'is-invalid' : 'is-valid' %> <% } %>"
+                        id="description" placeholder="Description of product." rows="5" name="description"
+                        id="description"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
+                </div>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-dark">
+                    <% if (editing) { %>
+                    Update Product
+                    <% } else { %>
+                    Add Product<% } %></button>
+            </form>
+        </div>
+    </main>
+    <main>
+
+
+
+
+        <!-- <div class="form-control">
+                <label for="image">Image</label>
+                <input 
+                    type="file" 
+                    name="image" 
+                    id="image" >
+            </div> -->
+
+
+        <%- include('../includes/end.ejs') %>

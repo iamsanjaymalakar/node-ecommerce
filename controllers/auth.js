@@ -63,11 +63,12 @@ exports.postLogin = (req, res, next) => {
                     if (match) {
                         req.session.isLoggedIn = true;
                         req.session.user = user;
+                        let redirectTo = req.session.redirectTo || '/';
+                        delete req.session.redirectTo;
                         return req.session.save(err => {
-                            // throw new Error(err);
                             if (err)
                                 console.log(err);
-                            res.redirect('/');
+                            res.redirect(redirectTo);
                         });
                     }
                     return res.status(422).render('auth/login', {
