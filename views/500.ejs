@@ -4,6 +4,9 @@
 
 <body>
     <%- include('includes/navigation.ejs') %>
+    <% if (error) { %>
+    <%= error %>
+    <% } %>
     <div class="error-500" data-text="Oh no! Our spaghetti code is not working properly. We will be back soon!">
         <spaguetti>
             <fork></fork>
