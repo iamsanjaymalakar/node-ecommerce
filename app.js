@@ -5,7 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrfProtection = require('csurf')();
-
+const multer = require('multer');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 
@@ -25,7 +25,39 @@ app.set('views', 'views');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+// bodyparser
 app.use(bp.urlencoded({ extended: false }));
+
+// multer storage
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'images');
+    },
+    filename: (req, file, cb) => {
+        cb(null, new Date().toISOString() + '-' + file.originalname);
+    }
+});
+
+// multer filter
+const fileFilter = (req, file, cb) => {
+    if (
+        file.mimetype === 'image/png' ||
+        file.mimetype === 'image/jpg' ||
+        file.mimetype === 'image/jpeg'
+    ) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
+// multer middleware
+app.use(
+    multer({
+        storage: fileStorage,
+        fileFilter: fileFilter
+    }).single('image')
+);
 
 //session storage
 const store = new MongoDBStore({
@@ -100,7 +132,8 @@ app.use((err, req, res, next) => {
 // if db connection successfull start listening
 mongoose
     .connect(MONGODB_URI, {
-        useNewUrlParser: true, useUnifiedTopology: true
+        useNewUrlParser: true,
+        useUnifiedTopology: true
     }).then(res => {
         app.listen(3000, () => {
             console.log('Started');
