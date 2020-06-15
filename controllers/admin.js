@@ -55,7 +55,21 @@ exports.postAddProduct = (req, res, next) => {
             console.log('Created Product');
             res.redirect('/admin/products');
         })
-        .catch(err => {
-            return new Error(err);
-        });
+        .catch(err => new Error(err));
+};
+
+
+// GET /admin/products
+exports.getProducts = (req, res, next) => {
+    Product.find({ userId: req.user._id })
+        // .select('title price -_id')
+        // .populate('userId', 'name')
+        .then(products => {
+            res.render('admin/products', {
+                prods: products,
+                pageTitle: 'Admin Products',
+                path: '/admin/products'
+            });
+        })
+        .catch(err => new Error(err));
 };

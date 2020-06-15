@@ -19,4 +19,8 @@ router.route('/add-product')
     ], isAuth, adminController.postAddProduct);
 
 
+router.route('/products')
+    .get(isAuth, adminController.getProducts);
+
+
 module.exports = router;
