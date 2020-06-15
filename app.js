@@ -7,12 +7,14 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csrfProtection = require('csurf')();
 
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 
 const User = require('./models/user');
 
 const app = express();
 
-const MONGODB_URI = 'mongodb://localhost:27017/ecommerce';
+// const MONGODB_URI = 'mongodb://localhost:27017/ecommerce';
+const MONGODB_URI = 'mongodb+srv://sanjay:aHSkJWk0hovFzF0R@ecommerce-leet4.mongodb.net/ecommerce';
 
 // set ejs as view engine
 app.set('view engine', 'ejs');
@@ -76,18 +78,20 @@ app.use((req, res, next) => {
         });
 });
 
-
+app.use('/admin', adminRoutes);
 app.use(authRoutes);
 
 app.get('/', function (req, res) {
     res.send('Hello ' + JSON.stringify(req.session));
 });
 
-app.use((error, req, res, next) => {
+app.use((err, req, res, next) => {
     console.log('Global error function');
+    console.log(err);
     res.status(500).render('500', {
         pageTitle: 'Error!',
         path: '/500',
+        error: err,
         isAuthenticated: req.session.isLoggedIn
     });
 });
