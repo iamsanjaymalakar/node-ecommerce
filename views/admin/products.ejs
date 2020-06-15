@@ -21,11 +21,11 @@
                                 <%= product.price %>
                             </h5>
                             <p class="card-text">
-                            <% if (product.description.length>110) { %>
+                                <% if (product.description.length>110) { %>
                                 <%= product.description.substring(0, 110) + "..." %>
-                            <% } else { %>
+                                <% } else { %>
                                 <%= product.description %>
-                            <% } %>
+                                <% } %>
                             </p>
                         </div>
                         <a href="/admin/edit-product/<%= product._id %>?edit=true"
@@ -37,11 +37,36 @@
                     </div>
                 </div>
                 <% } %>
-                <% } else { %>box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-                <h1>No Products Found!</h1>
+                <% } else { %>
+                <div class="m-5">
+                    <h1>No Products Found!</h1>
+                </div>
                 <% } %>
             </div>
         </div>
     </main>
     <%- include('../includes/end.ejs') %>
-    <!-- <script src="/js/admin.js"></script> -->
+    <script>
+        const deleteProduct = btn => {
+            const prodId = btn.parentNode.querySelector('[name=productId]').value;
+            const csrf = btn.parentNode.querySelector('[name=_csrf]').value;
+            const productElement = btn.closest('div.col-12');
+            fetch('/admin/product/' + prodId, {
+                method: 'DELETE',
+                headers: {
+                    'csrf-token': csrf
+                }
+            })
+                .then(result => {
+                    return result.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    productElement.parentNode.removeChild(productElement);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        };
+
+    </script>

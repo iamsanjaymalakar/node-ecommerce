@@ -23,4 +23,8 @@ router.route('/products')
     .get(isAuth, adminController.getProducts);
 
 
+router.route('/product/:productId')
+    .delete(isAuth, adminController.deleteProduct);
+
+
 module.exports = router;

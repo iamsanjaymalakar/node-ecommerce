@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { validationResult } = require('express-validator');
 const Product = require('../models/product');
 
@@ -52,7 +53,7 @@ exports.postAddProduct = (req, res, next) => {
     product
         .save()
         .then(result => {
-            console.log('Created Product');
+            console.log('Created Product.');
             res.redirect('/admin/products');
         })
         .catch(err => new Error(err));
@@ -72,4 +73,33 @@ exports.getProducts = (req, res, next) => {
             });
         })
         .catch(err => new Error(err));
+};
+
+
+// DELETE /admin/product/:productId
+exports.deleteProduct = (req, res, next) => {
+    const prodId = req.params.productId;
+    Product.findById(prodId)
+        .then(product => {
+            if (!product) {
+                return next(new Error('Product not found.'));
+            }
+            // fileHelper.deleteFile(product.imageUrl);
+            fs.unlink(product.imageURL, err => {
+                if (err) {
+                    throw (err);
+                }
+            });
+            return Product.deleteOne({
+                _id: prodId,
+                userId: req.user._id
+            });
+        })
+        .then(() => {
+            console.log('Deleted Product.');
+            res.status(200).json({ message: 'Success!' });
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Deleting product failed.' });
+        });
 };
