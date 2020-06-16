@@ -12,7 +12,8 @@ router.route('/add-product')
             .isString()
             .isLength({ min: 3 })
             .trim(),
-        body('price', 'Price should be a number.').isFloat(),
+        body('price', 'Price should be a number.')
+            .isFloat(),
         body('description', 'Enter a valid description of product.')
             .isLength({ min: 5, max: 400 })
             .trim()
@@ -25,6 +26,27 @@ router.route('/products')
 
 router.route('/product/:productId')
     .delete(isAuth, adminController.deleteProduct);
+
+
+router.route('/edit-product/:productId')
+    .get(isAuth, adminController.getEditProduct);
+
+
+router.route('/edit-product')
+    .post([
+        body('title', 'Enter a valid title with minimum 3 characters.')
+            .isString()
+            .isLength({ min: 3 })
+            .trim(),
+        body('price', 'Price should be a number.')
+            .isFloat(),
+        body('description', 'Enter a valid description of product.')
+            .isLength({ min: 5, max: 400 })
+            .trim()
+    ],
+        isAuth,
+        adminController.postEditProduct
+    );
 
 
 module.exports = router;

@@ -56,6 +56,9 @@
                         id="description" placeholder="Description of product." rows="5" name="description"
                         id="description"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
                 </div>
+                <% if (editing) { %>
+                <input type="hidden" value="<%= product._id %>" name="productId">
+                <% } %>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="btn btn-dark">
                     <% if (editing) { %>

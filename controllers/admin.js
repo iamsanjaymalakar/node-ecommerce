@@ -63,8 +63,6 @@ exports.postAddProduct = (req, res, next) => {
 // GET /admin/products
 exports.getProducts = (req, res, next) => {
     Product.find({ userId: req.user._id })
-        // .select('title price -_id')
-        // .populate('userId', 'name')
         .then(products => {
             res.render('admin/products', {
                 prods: products,
@@ -84,7 +82,6 @@ exports.deleteProduct = (req, res, next) => {
             if (!product) {
                 return next(new Error('Product not found.'));
             }
-            // fileHelper.deleteFile(product.imageUrl);
             fs.unlink(product.imageURL, err => {
                 if (err) {
                     throw (err);
@@ -102,4 +99,78 @@ exports.deleteProduct = (req, res, next) => {
         .catch(err => {
             res.status(500).json({ message: 'Deleting product failed.' });
         });
+};
+
+
+// GET /admin/edit-product/:productId
+exports.getEditProduct = (req, res, next) => {
+    if (!req.query.edit) {
+        return res.redirect('/');
+    }
+    const prodId = req.params.productId;
+    Product.findById(prodId)
+        .then(product => {
+            if (!product) {
+                return res.redirect('/');
+            }
+            res.render('admin/edit-product', {
+                pageTitle: 'Edit Product',
+                path: '/admin/edit-product',
+                editing: true,
+                product: product,
+                hasError: false,
+                errorMessage: null,
+                validationErrors: []
+            });
+        })
+        .catch(err => new Error(err));
+};
+
+
+// POST /admin/edit-product
+exports.postEditProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+    const updatedTitle = req.body.title;
+    const updatedPrice = req.body.price;
+    const image = req.file;
+    const updatedDesc = req.body.description;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).render('admin/edit-product', {
+            pageTitle: 'Edit Product',
+            path: '/admin/edit-product',
+            editing: true,
+            hasError: true,
+            product: {
+                title: updatedTitle,
+                price: updatedPrice,
+                description: updatedDesc,
+                _id: prodId
+            },
+            errorMessage: null,
+            validationErrors: errors.array()
+        });
+    }
+    Product.findById(prodId)
+        .then(product => {
+            if (product.userId.toString() !== req.user._id.toString()) {
+                return res.redirect('/');
+            }
+            product.title = updatedTitle;
+            product.price = updatedPrice;
+            product.description = updatedDesc;
+            if (image) {
+                fs.unlink(product.imageURL, err => {
+                    if (err) {
+                        throw (err);
+                    }
+                });
+                product.imageURL = image.path;
+            }
+            return product.save().then(result => {
+                console.log('Updated Product!');
+                res.redirect('/admin/products');
+            });
+        })
+        .catch(err => new Error(err));
 };
