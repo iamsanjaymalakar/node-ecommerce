@@ -6,8 +6,10 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrfProtection = require('csurf')();
 const multer = require('multer');
+
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
 const User = require('./models/user');
 
@@ -112,6 +114,7 @@ app.use((req, res, next) => {
 
 app.use('/admin', adminRoutes);
 app.use(authRoutes);
+app.use(shopRoutes);
 
 app.get('/', function (req, res) {
     res.send('Hello ' + JSON.stringify(req.session));
