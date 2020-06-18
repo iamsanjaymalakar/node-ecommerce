@@ -2,6 +2,7 @@ const Product = require('../models/product');
 const ITEMS_PER_PAGE = 6;
 
 
+// GET /
 exports.getIndex = (req, res, next) => {
     const page = +req.query.page || 1;
     let total;
@@ -30,6 +31,7 @@ exports.getIndex = (req, res, next) => {
 };
 
 
+// GET /products
 exports.getProducts = (req, res, next) => {
     const page = +req.query.page || 1;
     let totalItems;
@@ -55,14 +57,11 @@ exports.getProducts = (req, res, next) => {
                 lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
             });
         })
-        .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
+        .catch(err => new Error(err));
 };
 
 
+// GET /products/:productId
 exports.getProduct = (req, res, next) => {
     const prodId = req.params.productId;
     Product.findById(prodId)
@@ -73,9 +72,49 @@ exports.getProduct = (req, res, next) => {
                 path: '/products'
             });
         })
-        .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
+        .catch(err => new Error(err));
+};
+
+
+// GET /cart
+exports.getCart = (req, res, next) => {
+    req.user
+        .populate('cart.productId')
+        .execPopulate()
+        .then(user => {
+            const products = user.cart;
+            res.render('shop/cart', {
+                path: '/cart',
+                pageTitle: 'Your Cart',
+                products: products
+            });
+        })
+        .catch(err => new Error(err));
+};
+
+
+// POST /cart
+exports.postCart = (req, res, next) => {
+    const productId = req.body.productId;
+    Product.findById(productId)
+        .then(product => {
+            return req.user.addToCart(product);
+        })
+        .then(result => {
+            // console.log(result);
+            res.redirect('/cart');
+        })
+        .catch(err => new Error(err));
+};
+
+
+// POST /cart-delete-item
+exports.postCartDeleteProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+    req.user
+        .removeFromCart(prodId)
+        .then(result => {
+            res.redirect('/cart');
+        })
+        .catch(err => new Error(err));
 };

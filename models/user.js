@@ -27,11 +27,11 @@ const userSchema = new mongoose.Schema({
                 required: true
             }
         }
-    ]
+    ],
 });
 
 
-userSchema.methods.addToCart = product => {
+userSchema.methods.addToCart = function (product) {
     // check product exists on cart
     const cartProductIndex = this.cart.findIndex(cartProduct => {
         return cartProduct.productId.toString() === product._id.toString();
@@ -57,12 +57,12 @@ userSchema.methods.addToCart = product => {
     return this.save();
 };
 
-userSchema.methods.removeFromCart = productId => {
+userSchema.methods.removeFromCart = function (productId) {
     this.cart = this.cart.filter(item => item.productId.toString() !== productId.toString());
     return this.save();
 };
 
-userSchema.methods.clearCart = () => {
+userSchema.methods.clearCart = function () {
     this.cart = [];
     return this.save();
 };
