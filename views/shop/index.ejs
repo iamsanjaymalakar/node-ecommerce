@@ -42,14 +42,16 @@
                 </div>
                 <% } %>
             </div>
+            <% if (prods.length) { %>
             <%- include('../includes/pagination.ejs', {
-                currentPage: currentPage, 
-                nextPage: nextPage,
-                prevPage: prevPage,
-                lastPage: lastPage, 
-                hasNextPage: hasNextPage,
-                hasPrevPage: hasPrevPage
-                }) %>
+                    currentPage: currentPage, 
+                    nextPage: nextPage,
+                    prevPage: prevPage,
+                    lastPage: lastPage, 
+                    hasNextPage: hasNextPage,
+                    hasPrevPage: hasPrevPage
+                    }) %>
+            <% } %>
         </div>
     </main>
     <%- include('../includes/end.ejs') %>
