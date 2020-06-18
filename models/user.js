@@ -57,6 +57,17 @@ userSchema.methods.addToCart = function (product) {
     return this.save();
 };
 
+
+userSchema.methods.reduceFromCart = function (productId) {
+    const cartProductIndex = this.cart.findIndex(cartProduct => {
+        return cartProduct.productId.toString() === productId;
+    });
+    if (this.cart[cartProductIndex].quantity > 1)
+        this.cart[cartProductIndex].quantity--;
+    return this.save();
+}
+
+
 userSchema.methods.removeFromCart = function (productId) {
     this.cart = this.cart.filter(item => item.productId.toString() !== productId.toString());
     return this.save();

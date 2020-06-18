@@ -78,15 +78,20 @@ exports.getProduct = (req, res, next) => {
 
 // GET /cart
 exports.getCart = (req, res, next) => {
+    let totalPrice = 0;
     req.user
         .populate('cart.productId')
         .execPopulate()
         .then(user => {
             const products = user.cart;
+            products.forEach(p => {
+                totalPrice += p.productId.price * p.quantity;
+            })
             res.render('shop/cart', {
                 path: '/cart',
                 pageTitle: 'Your Cart',
-                products: products
+                products: products,
+                totalPrice: totalPrice
             });
         })
         .catch(err => new Error(err));
@@ -96,12 +101,19 @@ exports.getCart = (req, res, next) => {
 // POST /cart
 exports.postCart = (req, res, next) => {
     const productId = req.body.productId;
+    const dec = req.body.dec;
+    if (req.body.dec) {
+        return req.user.reduceFromCart(productId)
+            .then(result => {
+                res.redirect('/cart');
+            })
+            .catch(err => new Error(err));
+    }
     Product.findById(productId)
         .then(product => {
             return req.user.addToCart(product);
         })
         .then(result => {
-            // console.log(result);
             res.redirect('/cart');
         })
         .catch(err => new Error(err));
