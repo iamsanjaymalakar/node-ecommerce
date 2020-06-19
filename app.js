@@ -16,7 +16,8 @@ const User = require('./models/user');
 const app = express();
 
 // const MONGODB_URI = 'mongodb://localhost:27017/ecommerce';
-const MONGODB_URI = 'mongodb+srv://sanjay:aHSkJWk0hovFzF0R@ecommerce-leet4.mongodb.net/ecommerce';
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}` +
+    `@ecommerce-leet4.mongodb.net/${process.env.MONGO_DATABASE}`;
 
 // set ejs as view engine
 app.set('view engine', 'ejs');
@@ -74,7 +75,7 @@ store.on('error', function (error) {
 //session
 app.use(
     session({
-        secret: 'my secret',
+        secret: `${process.env.SESSION_SECRET}`,
         resave: false,
         saveUninitialized: false,
         cookie: {
