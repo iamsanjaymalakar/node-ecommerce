@@ -5,8 +5,7 @@ const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 
-const SENDGRID_API_KEY = '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';
-sendgridMail.setApiKey(SENDGRID_API_KEY);
+sendgridMail.setApiKey(`${process.env.SENDGRID_API_KEY}`);
 
 
 // GET /login
