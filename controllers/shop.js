@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 console.log(process.env.STRIPE_KEY);
 const ITEMS_PER_PAGE = 6;
@@ -87,6 +88,16 @@ exports.getCart = (req, res, next) => {
         .execPopulate()
         .then(user => {
             products = user.cart;
+            if (products.length === 0) {
+                res.render('shop/cart', {
+                    path: '/cart',
+                    pageTitle: 'Your Cart',
+                    products: products,
+                    totalPrice: totalPrice,
+                    sessionId: null
+                });
+                return null;
+            }
             products.forEach(p => {
                 totalPrice += p.productId.price * p.quantity;
             });
@@ -101,18 +112,20 @@ exports.getCart = (req, res, next) => {
                         quantity: p.quantity
                     };
                 }),
-                success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
-                cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel'
+                success_url: req.protocol + '://' + req.get('host') + '/checkout-success',
+                cancel_url: req.protocol + '://' + req.get('host') + '/cart'
             });
         }).then(session => {
-            res.render('shop/cart', {
-                path: '/cart',
-                pageTitle: 'Your Cart',
-                products: products,
-                totalPrice: totalPrice,
-                sessionId: session.id
+            if (session) {
+                res.render('shop/cart', {
+                    path: '/cart',
+                    pageTitle: 'Your Cart',
+                    products: products,
+                    totalPrice: totalPrice,
+                    sessionId: session.id
 
-            });
+                });
+            }
         })
         .catch(err => new Error(err));
 };
@@ -147,6 +160,48 @@ exports.postCartDeleteProduct = (req, res, next) => {
         .removeFromCart(prodId)
         .then(result => {
             res.redirect('/cart');
+        })
+        .catch(err => new Error(err));
+};
+
+
+// GET /checkout-success
+exports.getCheckoutSuccess = (req, res, next) => {
+    req.user
+        .populate('cart.productId')
+        .execPopulate()
+        .then(user => {
+            const products = user.cart.map(p => {
+                return { quantity: p.quantity, product: { ...p.productId._doc } };
+            });
+            const order = new Order({
+                user: {
+                    email: req.user.email,
+                    userId: req.user
+                },
+                products: products
+            });
+            return order.save();
+        })
+        .then(result => {
+            return req.user.clearCart();
+        })
+        .then(() => {
+            res.redirect('/orders');
+        })
+        .catch(err => new Error(err));
+};
+
+
+// GET /orders
+exports.getOrders = (req, res, next) => {
+    Order.find({ 'user.userId': req.user._id })
+        .then(orders => {
+            res.render('shop/orders', {
+                path: '/orders',
+                pageTitle: 'Your Orders',
+                orders: orders
+            });
         })
         .catch(err => new Error(err));
 };

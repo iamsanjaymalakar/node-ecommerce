@@ -17,7 +17,7 @@
                                 <div class="row mb-4">
                                     <div class="col-md-5 col-lg-3 col-xl-3">
                                         <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
-                                            <img class="img-fluid w-100" src="<%= product.productId.imageURL %>"
+                                            <img class="img-fluid w-100" src="/<%= product.productId.imageURL %>"
                                                 alt="<%= product.productId.title %>" />
                                         </div>
                                     </div>
@@ -184,6 +184,7 @@
             </div>
         </section>
     </main>
+    <% if (sessionId) { %>
     <script src="https://js.stripe.com/v3/"></script>
     <script>
         let stripe = Stripe('pk_test_51GvcKOKvbxV1TW6TU4vax8iYA7eIiaawS7NBfwUAmvfS1wu0RKCGYSndysSPAfpI85ml5F2ZSKDQZ6oq1Q0zVo6W00abKr73yQ');
@@ -193,4 +194,5 @@
             });
         });
     </script>
+    <% } %>
     <%- include('../includes/end.ejs') %>
