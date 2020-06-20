@@ -140,7 +140,7 @@ exports.postSignup = (req, res, next) => {
             res.redirect('/login');
             const msg = {
                 to: email,
-                from: 'iamsanjaymalakar@gmail.com',
+                from: '19malakar@gmail.com',
                 subject: 'Signup succeeded!',
                 html: '<h1>Sign-up successful.</h1>'
             };
@@ -210,7 +210,7 @@ exports.postReset = (req, res, next) => {
                 res.redirect('/?' + token);
                 const msg = {
                     to: email,
-                    from: 'iamsanjaymalakar@gmail.com',
+                    from: '19malakar@gmail.com',
                     subject: 'Password reset.',
                     html: '<p>You requested a password reset</p><p>Click this ' +
                         '<a href="http://localhost:3000/reset/' + token +
