@@ -55,7 +55,8 @@
                                         </div>
                                         <div class="d-flex justify-content-between mt-auto">
                                             <form action="/cart-delete-item" method="POST">
-                                                <input type="hidden" value="<%= product.productId._id %>" name="productId">
+                                                <input type="hidden" value="<%= product.productId._id %>"
+                                                    name="productId">
                                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                                 <button class="btn btn-danger" type="submit">Delete</button>
                                             </form>
@@ -130,8 +131,47 @@
                                         <span><strong>$<%= totalPrice %> </strong></span>
                                     </li>
                                 </ul>
-                                <button type="button" class="btn btn-dark btn-block">
-                                    Order Now!</button>
+                                <button id="order-button" class="btn btn-dark btn-block">
+                                    Proceed to Checkout!</button>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6>Basic test card numbers</h6>
+                                <table class="table table-sm table-bordered table-striped text-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Numbder</th>
+                                            <th>Brand</th>
+                                            <th>CVC</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        <td>4242 4242 4242 4242</td>
+                                        <td>Visa</td>
+                                        <td>Any 3 digits</td>
+                                        <td>Any future date</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5555 5555 5555 4444</td>
+                                        <td>Master card</td>
+                                        <td>Any 3 digits</td>
+                                        <td>Any future date</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3782 822463 10005</td>
+                                        <td>Americal Express</td>
+                                        <td>Any 3 digits</td>
+                                        <td>Any future date</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6011 1111 1111 1117</td>
+                                        <td>Discover</td>
+                                        <td>Any 3 digits</td>
+                                        <td>Any future date</td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -144,4 +184,13 @@
             </div>
         </section>
     </main>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        let stripe = Stripe('pk_test_51GvcKOKvbxV1TW6TU4vax8iYA7eIiaawS7NBfwUAmvfS1wu0RKCGYSndysSPAfpI85ml5F2ZSKDQZ6oq1Q0zVo6W00abKr73yQ');
+        document.getElementById('order-button').addEventListener('click', function () {
+            stripe.redirectToCheckout({
+                sessionId: '<%= sessionId %>'
+            });
+        });
+    </script>
     <%- include('../includes/end.ejs') %>

@@ -1,4 +1,6 @@
 const Product = require('../models/product');
+const stripe = require('stripe')(process.env.STRIPE_KEY);
+console.log(process.env.STRIPE_KEY);
 const ITEMS_PER_PAGE = 6;
 
 
@@ -79,19 +81,37 @@ exports.getProduct = (req, res, next) => {
 // GET /cart
 exports.getCart = (req, res, next) => {
     let totalPrice = 0;
+    let products;
     req.user
         .populate('cart.productId')
         .execPopulate()
         .then(user => {
-            const products = user.cart;
+            products = user.cart;
             products.forEach(p => {
                 totalPrice += p.productId.price * p.quantity;
-            })
+            });
+            return stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: products.map(p => {
+                    return {
+                        name: p.productId.title,
+                        description: p.productId.description,
+                        amount: p.productId.price * 100,
+                        currency: 'usd',
+                        quantity: p.quantity
+                    };
+                }),
+                success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
+                cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel'
+            });
+        }).then(session => {
             res.render('shop/cart', {
                 path: '/cart',
                 pageTitle: 'Your Cart',
                 products: products,
-                totalPrice: totalPrice
+                totalPrice: totalPrice,
+                sessionId: session.id
+
             });
         })
         .catch(err => new Error(err));
