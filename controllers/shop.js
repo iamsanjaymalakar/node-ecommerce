@@ -5,6 +5,7 @@ const pdfkit = require('pdfkit');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
+const user = require('../models/user');
 
 const ITEMS_PER_PAGE = 6;
 
@@ -93,6 +94,7 @@ exports.getCart = (req, res, next) => {
         .then(user => {
             products = user.cart;
             if (products.length === 0) {
+                console.log('none');
                 res.render('shop/cart', {
                     path: '/cart',
                     pageTitle: 'Your Cart',
@@ -105,21 +107,26 @@ exports.getCart = (req, res, next) => {
             products.forEach(p => {
                 totalPrice += p.productId.price * p.quantity;
             });
+            console.log(totalPrice);
             return stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 line_items: products.map(p => {
                     return {
                         name: p.productId.title,
                         description: p.productId.description,
-                        amount: p.productId.price * 100,
+                        amount: parseInt(p.productId.price * 100),
                         currency: 'usd',
                         quantity: p.quantity
                     };
                 }),
                 success_url: req.protocol + '://' + req.get('host') + '/checkout-success',
                 cancel_url: req.protocol + '://' + req.get('host') + '/cart'
+            }, function (err, session) {
+                console.log(err);
             });
         }).then(session => {
+            console.log('session created');
+            console.log(session);
             if (session) {
                 res.render('shop/cart', {
                     path: '/cart',

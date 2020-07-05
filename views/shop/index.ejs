@@ -10,7 +10,7 @@
                 <% if (prods.length > 0) { %>
                 <% for (let product of prods) { %>
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3 d-flex justify-content-center">
-                    <div class="card m-4 m-xl-5" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);">
+                    <div class="card m-4 mx-xl-5" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);">
                         <img src="/<%= product.imageURL %>" class="card-image-top image-responsive w-100"
                             alt="<%= product.title %>" onclick="location.href='/products/<%= product._id %>';">
                         <div class="card-body">
@@ -30,9 +30,9 @@
                         </div>
                         <a href="/products/<%= product._id %>"
                             class="btn btn-info btn-lg btn-block rounded-0">Details</a>
-                        <% if (isAuthenticated) { %>
+                        <%// if (isAuthenticated) { %>
                         <%- include('../includes/add-to-cart.ejs', {product: product}) %>
-                        <% } %>
+                        <%// } %>
                     </div>
                 </div>
                 <% } %>
