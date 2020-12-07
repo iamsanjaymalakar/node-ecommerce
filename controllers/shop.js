@@ -7,7 +7,7 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 const user = require('../models/user');
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 8;
 
 
 // GET /
@@ -121,12 +121,9 @@ exports.getCart = (req, res, next) => {
                 }),
                 success_url: req.protocol + '://' + req.get('host') + '/checkout-success',
                 cancel_url: req.protocol + '://' + req.get('host') + '/cart'
-            }, function (err, session) {
-                console.log(err);
             });
         }).then(session => {
             console.log('session created');
-            console.log(session);
             if (session) {
                 res.render('shop/cart', {
                     path: '/cart',
