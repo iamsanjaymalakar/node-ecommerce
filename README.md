@@ -1,6 +1,8 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 
@@ -64,14 +66,12 @@ This was created while learning NodeJS from a Udemy course (NodeJS - The Complet
 * Express Sessions
 * Authentication
 * Stripe
-<br/>
-<br/>
+
 ### Built With
 * [NodeJS](https://nodejs.org)
 * [Express.js](https://expressjs.com/)
 * [Bootstrap](https://getbootstrap.com)
-<br/>
-<br/>
+
 ## Getting Started
 
 
@@ -86,7 +86,7 @@ This was created while learning NodeJS from a Udemy course (NodeJS - The Complet
 1. Get a free API Key at Stripe, SendGrid
 2. Clone the repo
    ```sh
-   git clone https://github.com//iamsanjaymalakar/node-ecommerce.git
+   git clone https://github.com/iamsanjaymalakar/node-ecommerce.git
    ```
 3. Install NPM packages
    ```sh
@@ -127,6 +127,10 @@ Project Link: [https://github.com/iamsanjaymalakar/node-ecommerce](https://githu
 [forks-url]: https://github.com/iamsanjaymalakar/node-ecommerce/network/members
 [stars-shield]: https://img.shields.io/github/stars/iamsanjaymalakar/node-ecommerce.svg?style=for-the-badge
 [stars-url]: https://github.com/iamsanjaymalakar/node-ecommerce/stargazers
+[issues-shield]: https://img.shields.io/github/issues/iamsanjaymalakar/node-ecommerce.svg?style=for-the-badge
+[issues-url]: https://github.com/iamsanjaymalakar/node-ecommerce/issues
+[license-shield]: https://img.shields.io/github/license/iamsanjaymalakar/node-ecommerce.svg?style=for-the-badge
+[license-url]: https://github.com/iamsanjaymalakar/node-ecommerceblob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/sanjaymalakar/
 [product-screenshot]: images/ss.png
