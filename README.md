@@ -17,7 +17,7 @@
   <h3 align="center">eCommerce</h3>
 
   <p align="center">
-    An ecommerce website created with NodeJS.
+    An eCommerce website created with NodeJS.
     <br />
     <a href="https://ecommerce99.herokuapp.com/">View Demo</a>
     <br>
@@ -83,7 +83,7 @@ This was created while learning NodeJS from a Udemy course (NodeJS - The Complet
 
 ### Installation
 
-1. Get a free API Key at Stripe, SendGrid
+1. Get a free API Key for Stripe, SendGrid
 2. Clone the repo
    ```sh
    git clone https://github.com/iamsanjaymalakar/node-ecommerce.git
@@ -92,9 +92,16 @@ This was created while learning NodeJS from a Udemy course (NodeJS - The Complet
    ```sh
    npm install
    ```
-4. Setup your API keys for variables in `environtment_vars.txt`
+4. Setup your API keys for variables in `environtment_vars.txt`. I have used environment variables to set up my API keys.
    ```JS
-   const API_KEY = 'ENTER YOUR API';
+   {
+        "MONGO_USER": "xxxxxx",
+        "MONGO_PASSWORD": "xxxxxxxxxxxx",
+        "MONGO_DATABASE": "xxxxxxxxxxxx",
+        "SESSION_SECRET": "xxxxxxxxxxxx",
+        "STRIPE_KEY": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "SENDGRID_API_KEY": "SG.xxxxxxxxxxxx.xxxxxx-xxxxxxxxxxxxxxxxxxxxxxxx"
+    }
    ```
 5. Run the project using npm
    ```sh
